@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  odoo:
+    build: .
+    command: ./odoo-bin --config "odoo.conf"
+    volumes:
+      - .:/usr/src/odoo/
+    ports:
+      - 8069:8069
+    container_name: odoo_container
+    depends_on:
+      - db
+  db:
+    image: postgres:15.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=dev_admin
+      - POSTGRES_PASSWORD=A55wCqRz5GAs6b9
+      - POSTGRES_DB=odoo17_db
+      - PGPORT=5435
+    ports:
+      - 5435:5435
+  pgadmin_odoo:
+    container_name: pgadmin_odoo
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=odooadmin@noemail.com
+      - PGADMIN_DEFAULT_PASSWORD=p6grrBK3LddJOlt
+    ports:
+      - 5050:80
+    depends_on:
+      - db
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+volumes:
+  pgadmin:
+  postgres_data:
